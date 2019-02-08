@@ -4,7 +4,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Factura extends CI_Controller {
 
 public function index(){
-	echo  "hola mundo";
+
+	echo  "/Factura/index". "<br>";
+    $this->load->library('Feedsoap');
+    //$feedsoap = new Feedsoap();
+    //$this->load->library('someclass',array('nombre'=>'jose'));
+    //$this->someclass->some_method();
+
 }
 public function estado($ticket){
     
