@@ -43,6 +43,32 @@ class Welcome extends CI_Controller {
 	public function example(){
 		echo 'GET/ example';
 	}
+	
+public function email(){
+
+     $config = Array(
+              'protocol' => 'smtp',
+              'smtp_host' => 'ssl://smtp.googlemail.com',
+              'smtp_port' => 465,
+              'smtp_user' => 'gzampuhd@gmail.com',
+              'smtp_pass' => 'YTh4m3unjun9'
+                );
+    $this->load->library('email',$config);
+    $this->email->set_newline("\r\n");
+
+    $this->email->from("gzampuhd@gmail.com");
+    $this->email->to("freddzg@gmail.com");
+    $this->email->subject("Email with Codeigniter");
+    $this->email->message("This is email has been sent with Codeigniter");
+
+    if($this->email->send())
+    {
+        echo "Your email was sent.!";
+    } else {
+        show_error($this->email->print_debugger());
+    }
+}
+
 	public function zipbase64($filename){
 		$folder='xml_firmado/';
 		$pathXmlfile=$folder.$filename.'.xml';

@@ -3,82 +3,223 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Factura extends CI_Controller {
 
+protected $username="2056622977400DL1RGZ";
+protected $password="12345678";
+    protected $url_consult="https://www.sunat.gob.pe/ol-it-wsconscpegem/billConsultService?wsdl";
+    protected  $url_beta="https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl";
+    protected  $url_production="";
+    protected $url_factura="";
+
+public function __construct()
+    {
+        parent::__construct();
+        $this->url_production=base_url().'wsdl/SunatProd.wsdl';
+        $this->url_factura=$this->url_production;
+    }
 public function index(){
 
 	echo  "/Factura/index". "<br>";
-    $this->load->library('Feedsoap');
+    $this->load->helper('file');
+    $extensions = array('xml');
+    $folder='xml_firmado/';
+    $filenames = get_filenames($folder);
+    foreach ($filenames as $file) {
+        if(pathinfo($folder.$file)['extension']=='xml'){
+            echo $file.'<br>';
+        }
+        
+    }
+    //var_dump($filenames);
+    //echo $this->url_production;
+    //$this->load->library('Feedsoap',array('url'=>$this->url_production));
+
     //$feedsoap = new Feedsoap();
     //$this->load->library('someclass',array('nombre'=>'jose'));
     //$this->someclass->some_method();
 
 }
-public function estado($ticket){
-    
-    $folder='xml_firmado/';
 
-        $wsdlURL = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+public function estado($ruc, $tipodoc, $serie, $numero){
+    $method = $_SERVER['REQUEST_METHOD'];
 
+    if($method!='GET'){
+        json_output(400,array('status'=>400, 'message'=>'Bad request.'));
+    }else {
         $XMLString = '<?xml version="1.0" encoding="UTF-8"?>
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://service.sunat.gob.pe" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
          <soapenv:Header>
              <wsse:Security>
                  <wsse:UsernameToken>
-                     <wsse:Username>20566229774LVENEEDO</wsse:Username>
-                     <wsse:Password>oialimull</wsse:Password>
+                     <wsse:Username>'.$this->username.'</wsse:Username>
+                     <wsse:Password>'.$this->password.'</wsse:Password>
                  </wsse:UsernameToken>
              </wsse:Security>
          </soapenv:Header>
          <soapenv:Body>
-             <ser:getStatus>
-                <ticket>'.$ticket.'</ticket>
-             </ser:getStatus>
+              <ser:getStatus>
+                 <rucComprobante>'.$ruc.'</rucComprobante>
+                 <tipoComprobante>'.$tipodoc.'</tipoComprobante>
+                 <serieComprobante>'.$serie.'</serieComprobante>
+                 <numeroComprobante>'.$numero.'</numeroComprobante>
+              </ser:getStatus>
          </soapenv:Body>
         </soapenv:Envelope>';
 
-        $this->load->library('Feedsoap');
-        $feedsoap = new Feedsoap();
-        $feedsoap->SoapClientCall($XMLString); 
-        $feedsoap->__call("getStatus", array(), array());
-        $result = $feedsoap->__getLastResponse();
+        $params =array('url' => $this->url_consult);
+        $this->load->library('Feedsoap',$params);
+        $this->feedsoap->SoapClientCall($XMLString); 
+        $this->feedsoap->__call("getStatus", array(), array());
+        $xml =  new DOMDocument();
+        $xml->loadXML($this->feedsoap->__getLastResponse());
+        $code = $xml->getElementsByTagName('statusCode')->item(0)->nodeValue;
+        $message = $xml->getElementsByTagName('statusMessage')->item(0)->nodeValue;
 
-        $r_doc = new DOMDocument();
-        $r_doc->loadXML($result);
+        /*
+        $xpath = new DomXpath($xml);
+        foreach ($xpath->query('//statusMessage') as $message){ }
+        foreach ($xpath->query('//statusCode') as $code){ }*/
+        json_output(200,array('status'=>'200', 'code'=>$code, 'message'=>$message));
+    }
+}
+public function estadocdr($ruc, $tipodoc, $serie, $numero){
+    $method = $_SERVER['REQUEST_METHOD'];
 
-        $statusCode=$r_doc->getElementsByTagName('statusCode')->item(0)->nodeValue;
+    if($method!='GET'){
+        json_output(400,array('status'=>400, 'message'=>'Bad request.'));
+    }else {
+        $XMLString = '<?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://service.sunat.gob.pe" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+         <soapenv:Header>
+             <wsse:Security>
+                 <wsse:UsernameToken>
+                     <wsse:Username>'.$this->username.'</wsse:Username>
+                     <wsse:Password>'.$this->password.'</wsse:Password>
+                 </wsse:UsernameToken>
+             </wsse:Security>
+         </soapenv:Header>
+         <soapenv:Body>
+              <ser:getStatusCdr>
+                 <rucComprobante>'.$ruc.'</rucComprobante>
+                 <tipoComprobante>'.$tipodoc.'</tipoComprobante>
+                 <serieComprobante>'.$serie.'</serieComprobante>
+                 <numeroComprobante>'.$numero.'</numeroComprobante>
+              </ser:getStatusCdr>
+         </soapenv:Body>
+        </soapenv:Envelope>';
 
-        if($statusCode !='0'){
-            $respuesta =$r_doc->getElementsByTagName('content')->item(0)->nodeValue;
+        $params =array('url' => $this->url_consult);
+        $this->load->library('Feedsoap',$params);
+        $this->feedsoap->SoapClientCall($XMLString); 
+        $this->feedsoap->__call("getStatusCdr", array(), array());
+        $xml =  new DOMDocument();
+        $xml->loadXML($this->feedsoap->__getLastResponse());
+        $content = $xml->getElementsByTagName('content')->item(0)->nodeValue;
+        $code = $xml->getElementsByTagName('statusCode')->item(0)->nodeValue;
+        $message = $xml->getElementsByTagName('statusMessage')->item(0)->nodeValue;
 
-            $arr=array(
-                'statusCode'=>$statusCode,
-                'content'=>$respuesta);
-            header('Content-Type: application/json');
-            echo json_encode( $arr );
-        }else{
-            $response =$r_doc->getElementsByTagName('content')->item(0)->nodeValue;
+        $folder='xml_firmado/';
+        $filename = $ruc.'-'.$tipodoc.'-'.$serie.'-'.$numero;
+        $cdr=base64_decode($content);
+        $archivo = fopen($folder.'R-'.$filename.'.zip','w+');
+        fputs($archivo,$cdr);
+        fclose($archivo);
 
-            $arr=array(
-                'statusCode'=>$statusCode,
-                'zip_cdr'=>$response);
-            header('Content-Type: application/json');
-            echo json_encode( $arr );
+        //DESCOMPRIMIR ARCHIVO
+        /*
+        $zip = new ZipArchive;
+        $res = $zip->open($folder.'R-'.$filename.'.zip');
 
-            $cdr=base64_decode($response);
-            $archivo = fopen($folder.'R-'.$ticket.'.zip','w+');
-            fputs($archivo,$cdr);
-            fclose($archivo);
-            //DESCOMPRIMIR ARCHIVO
-            $zip = new ZipArchive;
-            $res = $zip->open($folder.'R-'.$ticket.'.zip');
+        if ($res === TRUE) {
+            $zip->extractTo($folder);
+            $zip->close();            
+        }*/
 
-            if ($res === TRUE) {
-                $zip->extractTo($folder);
-                $zip->close();
-            }
-            
-        }
+        /*
+        $xpath = new DomXpath($xml);
+        foreach ($xpath->query('//statusMessage') as $message){ }
+        foreach ($xpath->query('//statusCode') as $code){ }*/
+        json_output(200,array(
+            'status'=>'200', 
+            'code'=>$code, 
+            'message'=>$message,
+            'content'=>$content
+            ));
+    }
+}
+public function ticket($ticket){
+    
+    $folder='temp/ticket/';
+
+    $XMLString = '<?xml version="1.0" encoding="UTF-8"?>
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://service.sunat.gob.pe" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+     <soapenv:Header>
+         <wsse:Security>
+             <wsse:UsernameToken>
+                 <wsse:Username>'.$this->username.'</wsse:Username>
+                 <wsse:Password>'.$this->password.'</wsse:Password>
+             </wsse:UsernameToken>
+         </wsse:Security>
+     </soapenv:Header>
+     <soapenv:Body>
+         <ser:getStatus>
+            <ticket>'.$ticket.'</ticket>
+         </ser:getStatus>
+     </soapenv:Body>
+    </soapenv:Envelope>';
+
+    $params =array('url' => $this->url_factura);
+    $this->load->library('Feedsoap', $params);
+    //$feedsoap = new Feedsoap();
+    $this->feedsoap->SoapClientCall($XMLString); 
+    $this->feedsoap->__call("getStatus", array(), array());
+    $result = $this->feedsoap->__getLastResponse();
+
+    $r_doc = new DOMDocument();
+    $r_doc->loadXML($result);
+
+    $statusCode=$r_doc->getElementsByTagName('statusCode')->item(0)->nodeValue;
+    $respuesta =$r_doc->getElementsByTagName('content')->item(0)->nodeValue;
+    $filename='';
+
+    $cdr=base64_decode($respuesta);
+    $archivo = fopen($folder.'R-'.$ticket.'.zip','w+');
+    fputs($archivo,$cdr);
+    fclose($archivo);
+
+    //DESCOMPRIMIR ARCHIVO
+    $zip = new ZipArchive;
+    $res = $zip->open($folder.'R-'.$ticket.'.zip');
+
+    if ($res === TRUE) {
+        $zip->extractTo($folder);
+        $zip->close();
         
-            
+        //buscar el xml
+        $this->load->helper('file');
+        $filenames = get_filenames($folder);
+        foreach ($filenames as $file) {
+            if(pathinfo($folder.$file)['extension']=='xml') $filename=$file;
+        }
+        if($filename!=''){
+            $xml = new DOMDocument();
+            $xml->load($folder.$filename);
+            $id = $xml->getElementsByTagName('ReferenceID')->item(0)->nodeValue;
+            $code = $xml->getElementsByTagName('ResponseCode')->item(0)->nodeValue;
+            $mensaje = $xml->getElementsByTagName('Description')->item(0)->nodeValue; 
+        }
+        delete_files($folder);
+    } 
+
+    $arr=array(
+        'statusCode'=>$statusCode,
+        'id'=>$id,
+        'code'=>$code,
+        'mensaje'=>$mensaje
+        );
+    header('Content-Type: application/json');
+    echo json_encode( $arr );
+
+
 }
 
 public function resumen(){
@@ -309,139 +450,139 @@ public function resumen(){
 public function anular(){
     $method = $_SERVER['REQUEST_METHOD'];
 
-        if($method!='POST'){
-            json_output(400,array('status'=>400, 'message'=>'Bad request.'));
-        }else {
-            $cab = json_decode(file_get_contents('php://input'), true);
-        
-        $emp_tipo_documento = $cab['emp_tipo_documento'];//6
-        $ruc = $cab['emp_ruc'];
-        $emp_razonsocial = $cab['emp_razonsocial'];
+    if($method!='POST'){
+        json_output(400,array('status'=>400, 'message'=>'Bad request.'));
+    }else {
+        $cab = json_decode(file_get_contents('php://input'), true);
+    
+    $emp_tipo_documento = $cab['emp_tipo_documento'];//6
+    $ruc = $cab['emp_ruc'];
+    $emp_razonsocial = $cab['emp_razonsocial'];
 
-        $id_comunicacion =$cab['id_comunicacion'];// 'RA-20181002-001';
-        $fecha_comunicacion = $cab['fecha_comunicacion'];
-        $fecha_baja = $cab['fecha_baja'];
+    $id_comunicacion =$cab['id_comunicacion'];// 'RA-20181002-001';
+    $fecha_comunicacion = $cab['fecha_comunicacion'];
+    $fecha_baja = $cab['fecha_baja'];
 
-        $dom = new DomDocument("1.0","ISO-8859-1");
-        $dom->xmlStandalone = false;
-        //$dom->formatOutput = true;
-        $dom->preserveWhiteSpace = false;
+    $dom = new DomDocument("1.0","ISO-8859-1");
+    $dom->xmlStandalone = false;
+    //$dom->formatOutput = true;
+    $dom->preserveWhiteSpace = false;
 
-        $Invoice = $dom->createElement('VoidedDocuments');
-        $dom->appendChild($Invoice);
-        
-        $Invoice->setAttribute('xmlns','urn:sunat:names:specification:ubl:peru:schema:xsd:VoidedDocuments-1');
-        $Invoice->setAttribute('xmlns:cac','urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
-        $Invoice->setAttribute('xmlns:cbc','urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
-        $Invoice->setAttribute('xmlns:ds','http://www.w3.org/2000/09/xmldsig#');
-        $Invoice->setAttribute('xmlns:ext','urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2');
-        $Invoice->setAttribute('xmlns:qdt','urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2');
-        $Invoice->setAttribute('xmlns:sac','urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1');
-        $Invoice->setAttribute('xmlns:xsi','http://www.w3.org/2001/XMLSchema-instance');
+    $Invoice = $dom->createElement('VoidedDocuments');
+    $dom->appendChild($Invoice);
+    
+    $Invoice->setAttribute('xmlns','urn:sunat:names:specification:ubl:peru:schema:xsd:VoidedDocuments-1');
+    $Invoice->setAttribute('xmlns:cac','urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
+    $Invoice->setAttribute('xmlns:cbc','urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
+    $Invoice->setAttribute('xmlns:ds','http://www.w3.org/2000/09/xmldsig#');
+    $Invoice->setAttribute('xmlns:ext','urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2');
+    $Invoice->setAttribute('xmlns:qdt','urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2');
+    $Invoice->setAttribute('xmlns:sac','urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1');
+    $Invoice->setAttribute('xmlns:xsi','http://www.w3.org/2001/XMLSchema-instance');
 
-        $UBLExtensions = $dom->createElement('ext:UBLExtensions');
-        $Invoice->appendChild($UBLExtensions);
+    $UBLExtensions = $dom->createElement('ext:UBLExtensions');
+    $Invoice->appendChild($UBLExtensions);
 
-        //signature 
-        $UBLExtension1 = $dom->createElement('ext:UBLExtension');
-        $UBLExtensions->appendChild($UBLExtension1);
-        $ExtensionContent1 = $dom->createElement('ext:ExtensionContent');
-        $UBLExtension1->appendChild($ExtensionContent1);
+    //signature 
+    $UBLExtension1 = $dom->createElement('ext:UBLExtension');
+    $UBLExtensions->appendChild($UBLExtension1);
+    $ExtensionContent1 = $dom->createElement('ext:ExtensionContent');
+    $UBLExtension1->appendChild($ExtensionContent1);
 
-        //bloque 1
-        $Invoice->appendChild($dom->createElement('cbc:UBLVersionID','2.0'));
-        $Invoice->appendChild($dom->createElement('cbc:CustomizationID','1.0'));
-        $Invoice->appendChild($dom->createElement('cbc:ID',$id_comunicacion));
-        $Invoice->appendChild($dom->createElement('cbc:ReferenceDate',$fecha_baja));
-        $Invoice->appendChild($dom->createElement('cbc:IssueDate',$fecha_comunicacion));
-        //$Invoice->appendChild($dom->createElement('cbc:InvoiceTypeCode','03'));
-        //$Invoice->appendChild($dom->createElement('cbc:DocumentCurrencyCode','PEN'));
+    //bloque 1
+    $Invoice->appendChild($dom->createElement('cbc:UBLVersionID','2.0'));
+    $Invoice->appendChild($dom->createElement('cbc:CustomizationID','1.0'));
+    $Invoice->appendChild($dom->createElement('cbc:ID',$id_comunicacion));
+    $Invoice->appendChild($dom->createElement('cbc:ReferenceDate',$fecha_baja));
+    $Invoice->appendChild($dom->createElement('cbc:IssueDate',$fecha_comunicacion));
+    //$Invoice->appendChild($dom->createElement('cbc:InvoiceTypeCode','03'));
+    //$Invoice->appendChild($dom->createElement('cbc:DocumentCurrencyCode','PEN'));
 
-        //bloque2 cac:Signature
-        $Signature = $dom->createElement('cac:Signature');
-        $Invoice->appendChild($Signature);
-        $Signature->appendChild($dom->createElement('cbc:ID',$id_comunicacion));
-        $SignatoryParty = $dom->createElement('cac:SignatoryParty');
-        $Signature->appendChild($SignatoryParty);
-        $PartyIdentification = $dom->createElement('cac:PartyIdentification');
-        $SignatoryParty->appendChild($PartyIdentification);
-        $PartyIdentification->appendChild($dom->createElement('cbc:ID',$ruc));
-        $PartyName = $dom->createElement('cac:PartyName');
-        $SignatoryParty->appendChild($PartyName);
-        $Name = $dom->createElement('cbc:Name',$emp_razonsocial);
-        $PartyName->appendChild($Name);
-        //$Name->appendChild($dom->createCDATASection("NOMBRE"));
+    //bloque2 cac:Signature
+    $Signature = $dom->createElement('cac:Signature');
+    $Invoice->appendChild($Signature);
+    $Signature->appendChild($dom->createElement('cbc:ID',$id_comunicacion));
+    $SignatoryParty = $dom->createElement('cac:SignatoryParty');
+    $Signature->appendChild($SignatoryParty);
+    $PartyIdentification = $dom->createElement('cac:PartyIdentification');
+    $SignatoryParty->appendChild($PartyIdentification);
+    $PartyIdentification->appendChild($dom->createElement('cbc:ID',$ruc));
+    $PartyName = $dom->createElement('cac:PartyName');
+    $SignatoryParty->appendChild($PartyName);
+    $Name = $dom->createElement('cbc:Name',$emp_razonsocial);
+    $PartyName->appendChild($Name);
+    //$Name->appendChild($dom->createCDATASection("NOMBRE"));
 
 
-        $DigitalSignatureAttachment = $dom->createElement('cac:DigitalSignatureAttachment');
-        $Signature->appendChild($DigitalSignatureAttachment);
-        $ExternalReference = $dom->createElement('cac:ExternalReference');
-        $DigitalSignatureAttachment->appendChild($ExternalReference);
-        $ExternalReference->appendChild($dom->createElement('cbc:URI',$ruc.'-'.$id_comunicacion));
+    $DigitalSignatureAttachment = $dom->createElement('cac:DigitalSignatureAttachment');
+    $Signature->appendChild($DigitalSignatureAttachment);
+    $ExternalReference = $dom->createElement('cac:ExternalReference');
+    $DigitalSignatureAttachment->appendChild($ExternalReference);
+    $ExternalReference->appendChild($dom->createElement('cbc:URI',$ruc.'-'.$id_comunicacion));
 
-        //bloque3 cac:AccountingSupplierParty
-        $AccountingSupplierParty = $dom->createElement('cac:AccountingSupplierParty');
-        $Invoice->appendChild($AccountingSupplierParty);
-        $AccountingSupplierParty->appendChild($dom->createElement('cbc:CustomerAssignedAccountID',$ruc));
-        $AccountingSupplierParty->appendChild($dom->createElement('cbc:AdditionalAccountID',$emp_tipo_documento));
-        $Party = $dom->createElement('cac:Party');
-        $AccountingSupplierParty->appendChild($Party);
-        $PartyName = $dom->createElement('cac:PartyLegalEntity');
-        $Party->appendChild($PartyName);
-        $Name = $dom->createElement('cbc:RegistrationName',$emp_razonsocial);
-        $PartyName->appendChild($Name);
+    //bloque3 cac:AccountingSupplierParty
+    $AccountingSupplierParty = $dom->createElement('cac:AccountingSupplierParty');
+    $Invoice->appendChild($AccountingSupplierParty);
+    $AccountingSupplierParty->appendChild($dom->createElement('cbc:CustomerAssignedAccountID',$ruc));
+    $AccountingSupplierParty->appendChild($dom->createElement('cbc:AdditionalAccountID',$emp_tipo_documento));
+    $Party = $dom->createElement('cac:Party');
+    $AccountingSupplierParty->appendChild($Party);
+    $PartyName = $dom->createElement('cac:PartyLegalEntity');
+    $Party->appendChild($PartyName);
+    $Name = $dom->createElement('cbc:RegistrationName',$emp_razonsocial);
+    $PartyName->appendChild($Name);
 
-        foreach ($cab['detalle'] as $item) {
-            $InvoiceLine = $dom->createElement('sac:VoidedDocumentsLine');
-            $Invoice->appendChild($InvoiceLine);
-            $InvoiceLine->appendChild($dom->createElement('cbc:LineID',$item['orden']));
-            $InvoiceLine->appendChild($dom->createElement('cbc:DocumentTypeCode',$item['tipo_documento']));
-            $InvoiceLine->appendChild($dom->createElement('sac:DocumentSerialID',$item['doc_serie']));
-            $InvoiceLine->appendChild($dom->createElement('sac:DocumentNumberID',$item['doc_numero']));
-            $InvoiceLine->appendChild($dom->createElement('sac:VoidReasonDescription',$item['motivo']));//ERROR EN SISTEMA|CANCELACION
-        }
+    foreach ($cab['detalle'] as $item) {
+        $InvoiceLine = $dom->createElement('sac:VoidedDocumentsLine');
+        $Invoice->appendChild($InvoiceLine);
+        $InvoiceLine->appendChild($dom->createElement('cbc:LineID',$item['orden']));
+        $InvoiceLine->appendChild($dom->createElement('cbc:DocumentTypeCode',$item['tipo_documento']));
+        $InvoiceLine->appendChild($dom->createElement('sac:DocumentSerialID',$item['doc_serie']));
+        $InvoiceLine->appendChild($dom->createElement('sac:DocumentNumberID',$item['doc_numero']));
+        $InvoiceLine->appendChild($dom->createElement('sac:VoidReasonDescription',$item['motivo']));//ERROR EN SISTEMA|CANCELACION
+    }
 
-        $dom->formatOutput = true;
-        $dom->save( 'xml/'.$ruc.'-'.$id_comunicacion.'.xml');
-        
-        //*************************************FIRMAR
-            $filename =$ruc.'-'.$id_comunicacion;
+    $dom->formatOutput = true;
+    $dom->save( 'xml/'.$ruc.'-'.$id_comunicacion.'.xml');
+    
+    //*************************************FIRMAR
+        $filename =$ruc.'-'.$id_comunicacion;
 
-            $this->load->library('XMLSecurityDSig');
-        $this->load->library('XMLSecurityKey');
-        $doc = new DOMDocument();
-        $doc->load('xml/'.$filename.'.xml');
-        //$doc->xmlStandalone = false;
-        //$doc->formatOutput = true;
-        //$doc->preserveWhiteSpace = false;
-        
-        // Crear un nuevo objeto de seguridad
-        $objDSig = new XMLSecurityDSig();
-        // Utilizar la canonización exclusiva de c14n
-        $objDSig->setCanonicalMethod(XMLSecurityDSig::EXC_C14N);
-        // Firmar con SHA-256
-        $objDSig->addReference(
-            $doc,
-            XMLSecurityDSig::SHA1,
-            array('http://www.w3.org/2000/09/xmldsig#enveloped-signature'),
-            array('force_uri' => true)
-        );
-        //Crear una nueva clave de seguridad (privada)
-        $objKey = new XMLSecurityKey;
-        $objKey->init(XMLSecurityKey::RSA_SHA1, array('type' => 'private'));
-        //Cargamos la clave privada
-        
-        $objKey->loadKey('dubau.key', true);
-        $objDSig->sign($objKey);
-        // Agregue la clave pública asociada a la firma
-        $objDSig->add509Cert(file_get_contents('dubau.cer'), true, false, array('subjectName' => true)); // array('issuerSerial' => true, 'subjectName' => true));
-        // Anexar la firma al XML
-        $objDSig->appendSignature($doc->getElementsByTagName('ExtensionContent')->item(0));
-        
-        //$doc->formatOutput = true;
+        $this->load->library('XMLSecurityDSig');
+    $this->load->library('XMLSecurityKey');
+    $doc = new DOMDocument();
+    $doc->load('xml/'.$filename.'.xml');
+    //$doc->xmlStandalone = false;
+    //$doc->formatOutput = true;
+    //$doc->preserveWhiteSpace = false;
+    
+    // Crear un nuevo objeto de seguridad
+    $objDSig = new XMLSecurityDSig();
+    // Utilizar la canonización exclusiva de c14n
+    $objDSig->setCanonicalMethod(XMLSecurityDSig::EXC_C14N);
+    // Firmar con SHA-256
+    $objDSig->addReference(
+        $doc,
+        XMLSecurityDSig::SHA1,
+        array('http://www.w3.org/2000/09/xmldsig#enveloped-signature'),
+        array('force_uri' => true)
+    );
+    //Crear una nueva clave de seguridad (privada)
+    $objKey = new XMLSecurityKey;
+    $objKey->init(XMLSecurityKey::RSA_SHA1, array('type' => 'private'));
+    //Cargamos la clave privada
+    
+    $objKey->loadKey('dubau.key', true);
+    $objDSig->sign($objKey);
+    // Agregue la clave pública asociada a la firma
+    $objDSig->add509Cert(file_get_contents('dubau.cer'), true, false, array('subjectName' => true)); // array('issuerSerial' => true, 'subjectName' => true));
+    // Anexar la firma al XML
+    $objDSig->appendSignature($doc->getElementsByTagName('ExtensionContent')->item(0));
+    
+    //$doc->formatOutput = true;
 
-        // Guardar el XML firmado
-        $doc->save('xml_firmado/'.$filename.'.xml');
+    // Guardar el XML firmado
+    $doc->save('xml_firmado/'.$filename.'.xml');
 
 
     //var_dump(expression)
@@ -451,59 +592,54 @@ public function anular(){
         //$filename="20380456444-03-F001-666";//'20380456444-03-F002-00000026';// 
 
 
-        $folder='xml_firmado/';
-        $pathXmlfile=$folder.$filename.'.xml';
-        $pathZipfile=$folder.$filename.'.zip';
+    $folder='xml_firmado/';
+    $pathXmlfile=$folder.$filename.'.xml';
+    $pathZipfile=$folder.$filename.'.zip';
+
+    $zip = new ZipArchive;
+    $zip->open($pathZipfile, ZipArchive::CREATE); 
+    $localfile = basename($pathXmlfile);
+    $zip->addFile($pathXmlfile,$localfile);
+    $zip->close();
+
+    $XMLString = '<?xml version="1.0" encoding="UTF-8"?>
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://service.sunat.gob.pe" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+     <soapenv:Header>
+         <wsse:Security>
+             <wsse:UsernameToken>
+                 <wsse:Username>'.$this->username.'</wsse:Username>
+                 <wsse:Password>'.$this->password.'</wsse:Password>
+             </wsse:UsernameToken>
+         </wsse:Security>
+     </soapenv:Header>
+     <soapenv:Body>
+         <ser:sendSummary>
+            <fileName>'.$filename.'.zip</fileName>
+            <contentFile>' . base64_encode(file_get_contents($pathZipfile)) . '</contentFile>
+         </ser:sendSummary>
+     </soapenv:Body>
+    </soapenv:Envelope>';
+
+    $params =array('url' => $this->url_factura);
+    $this->load->library('Feedsoap',$params);
+    //$feedsoap = new Feedsoap();
+    $this->feedsoap->SoapClientCall($XMLString); 
+    $this->feedsoap->__call("sendSummary", array(), array());
+    $result = $this->feedsoap->__getLastResponse();
     
-        $zip = new ZipArchive;
-        $zip->open($pathZipfile, ZipArchive::CREATE); 
-        $localfile = basename($pathXmlfile);
-        $zip->addFile($pathXmlfile,$localfile);
-        $zip->close();
+    $r_doc = new DOMDocument();
+    $r_doc->loadXML($result);
+    $respuesta = $r_doc->getElementsByTagName('ticket')->item(0)->nodeValue;
 
-        //Username>20380456444MODDATOS
-        //Password>moddatos
-        $wsdlURL = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
-
-        $XMLString = '<?xml version="1.0" encoding="UTF-8"?>
-        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://service.sunat.gob.pe" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
-         <soapenv:Header>
-             <wsse:Security>
-                 <wsse:UsernameToken>
-                     <wsse:Username>20566229774LVENEEDO</wsse:Username>
-                     <wsse:Password>oialimull</wsse:Password>
-                 </wsse:UsernameToken>
-             </wsse:Security>
-         </soapenv:Header>
-         <soapenv:Body>
-             <ser:sendSummary>
-                <fileName>'.$filename.'.zip</fileName>
-                <contentFile>' . base64_encode(file_get_contents($pathZipfile)) . '</contentFile>
-             </ser:sendSummary>
-         </soapenv:Body>
-        </soapenv:Envelope>';
-        //echo base64_encode(file_get_contents($pathZipfile));
-
-        $this->load->library('Feedsoap');
-        $feedsoap = new Feedsoap();
-        $feedsoap->SoapClientCall($XMLString); 
-        $feedsoap->__call("sendSummary", array(), array());
-        $result = $feedsoap->__getLastResponse();
-        
-        $r_doc = new DOMDocument();
-        $r_doc->loadXML($result);
-        $respuesta = $r_doc->getElementsByTagName('ticket')->item(0)->nodeValue;
-
-
-        $arr=array(
-                'ticket'=>$respuesta);
-            header('Content-Type: application/json');
-            echo json_encode( $arr );
-        }
+    $arr=array(
+            'ticket'=>$respuesta);
+        header('Content-Type: application/json');
+        echo json_encode( $arr );
+    }
 }
 
 public function sunat(){
-	$method = $_SERVER['REQUEST_METHOD'];
+	   $method = $_SERVER['REQUEST_METHOD'];
 
 		if($method!='POST'){
 			json_output(400,array('status'=>400, 'message'=>'Bad request.'));
@@ -670,7 +806,7 @@ public function sunat(){
                 $InvoiceTypeCode->setAttribute('name', 'Tipo de Operacion');
                 $InvoiceTypeCode->setAttribute('listSchemeURI', 'urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo51');
 
-/*
+        /*
             $Note1 = $dom->createElement('cbc:Note', 'VEINTIDOS MIL CIENTO TREINTITRES Y 80/100');
             $Invoice->appendChild($Note1);
                 $Note1->setAttribute('languageLocaleID','1000');
@@ -935,7 +1071,7 @@ public function sunat(){
                                 $PriceTypeCode->setAttribute('listAgencyName','PE:SUNAT');
                                 $PriceTypeCode->setAttribute('listURI','urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16');
 
-/*
+                /*
                 if ($item['precio_no_onerosa'] != '0.00') {
                     $AlternativeConditionPrice2 = $dom->createElement('cac:AlternativeConditionPrice');
                     $PricingReference->appendChild($AlternativeConditionPrice2);
@@ -1003,7 +1139,7 @@ public function sunat(){
 
         }
 
-    //*************************************FIRMAR
+        //*************************************FIRMAR
 			$filename =$emp_ruc.'-'.$doc_tipo_documento.'-'.$doc_numero;
 
 			$this->load->library('XMLSecurityDSig');
@@ -1067,8 +1203,8 @@ public function sunat(){
 		 <soapenv:Header>
 		     <wsse:Security>
 		         <wsse:UsernameToken>
-		             <wsse:Username>2056622977400DL1RGZ</wsse:Username>
-		             <wsse:Password>12345678</wsse:Password>
+		             <wsse:Username>'.$this->username.'</wsse:Username>
+		             <wsse:Password>'.$this->password.'</wsse:Password>
 		         </wsse:UsernameToken>
 		     </wsse:Security>
 		 </soapenv:Header>
@@ -1081,11 +1217,12 @@ public function sunat(){
 		</soapenv:Envelope>';
 		//echo base64_encode(file_get_contents($pathZipfile));
 
-		$this->load->library('Feedsoap');
-		$feedsoap = new Feedsoap();
-		$feedsoap->SoapClientCall($XMLString); 
-		$feedsoap->__call("sendBill", array(), array());
-		$result = $feedsoap->__getLastResponse();
+        $params=array('url'=>$this->url_factura);
+		$this->load->library('Feedsoap',$params);
+		//$feedsoap = new Feedsoap();
+		$this->feedsoap->SoapClientCall($XMLString); 
+		$this->feedsoap->__call("sendBill", array(), array());
+		$result = $this->feedsoap->__getLastResponse();
 		//Descargamos el Archivo Response
 		$archivo = fopen($folder.'C'.$filename.'.xml','w+');
 		fputs($archivo,$result);		
@@ -1109,8 +1246,6 @@ public function sunat(){
 		$zip->close();
 			//echo 'ok';
 
-
-
 			$r_doc = new DOMDocument();
 			$r_doc->load($folder.'R-'.$filename.'.xml');
 			$respuesta = $r_doc->getElementsByTagName('ResponseCode')->item(0)->nodeValue.'|'.$r_doc->getElementsByTagName('Description')->item(0)->nodeValue;
@@ -1130,12 +1265,9 @@ public function sunat(){
 		}
 		//Eliminamos el Archivo Response
 		unlink($folder.'C'.$filename.'.xml');
-
-
 }
 
-public function enviar($filename){
-		
+public function enviar($filename){		
 
 		//$filename="20380456444-03-F001-666";//'20380456444-03-F002-00000026';// 
 		$folder='xml_firmado/';

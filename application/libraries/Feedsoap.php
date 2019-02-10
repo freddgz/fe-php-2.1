@@ -3,12 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Feedsoap extends SoapClient{
     public $XMLStr = "";
-    public function __construct()
+    public function __construct($params=null)
     {
         //https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService?wsdl
         //https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl
-        $server=$_SERVER['SERVER_NAME'].substr($_SERVER['REQUEST_URI'],0,stripos(substr($_SERVER['REQUEST_URI'],1),'/')+1);
-        $url='http://'.$server.'/wsdl/SunatProd.wsdl';
+        $url=$params['url'];
         parent::__construct($url,array('cache_wsdl' => WSDL_CACHE_NONE, 'trace' => true));
     }
     public function setXMLStr($value)
