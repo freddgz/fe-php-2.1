@@ -3,11 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Factura extends CI_Controller {
 
-protected $username="2056622977400DL1RGZ";
-protected $password="12345678";
+    protected $username="2056622977400DL1RGZ";
+    protected $password="12345678";
     protected $url_consult="https://www.sunat.gob.pe/ol-it-wsconscpegem/billConsultService?wsdl";
-    protected  $url_beta="https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl";
-    protected  $url_production="";
+    protected $url_beta="https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl";
+    protected $url_production="";
     protected $url_factura="";
 
 public function __construct()
@@ -16,6 +16,7 @@ public function __construct()
         $this->url_production=base_url().'wsdl/SunatProd.wsdl';
         $this->url_factura=$this->url_production;
     }
+
 public function index(){
 
 	echo  "/Factura/index". "<br>";
@@ -81,6 +82,7 @@ public function estado($ruc, $tipodoc, $serie, $numero){
         json_output(200,array('status'=>'200', 'code'=>$code, 'message'=>$message));
     }
 }
+
 public function estadocdr($ruc, $tipodoc, $serie, $numero){
     $method = $_SERVER['REQUEST_METHOD'];
 
@@ -146,6 +148,7 @@ public function estadocdr($ruc, $tipodoc, $serie, $numero){
             ));
     }
 }
+
 public function ticket($ticket){
     
     $folder='temp/ticket/';
@@ -643,7 +646,9 @@ public function sunat(){
 
 		if($method!='POST'){
 			json_output(400,array('status'=>400, 'message'=>'Bad request.'));
-		}else {
+		}
+		else
+		{
             $cab = json_decode(file_get_contents('php://input'), true);
 
             $emp_tipo_documento = $cab['emp_tipo_documento'];
@@ -1375,6 +1380,7 @@ public function firmar($filename){
 		// Guardar el XML firmado
 		$doc->save('xml_firmado/'.$filename.'.xml');
 }
+
 public function generar(){
 	$method = $_SERVER['REQUEST_METHOD'];
 
