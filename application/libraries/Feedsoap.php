@@ -5,8 +5,6 @@ class Feedsoap extends SoapClient{
     public $XMLStr = "";
     public function __construct($params=null)
     {
-        //https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService?wsdl
-        //https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl
         $url=$params['url'];
         parent::__construct($url,array('cache_wsdl' => WSDL_CACHE_NONE, 'trace' => true));
     }

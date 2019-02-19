@@ -46,20 +46,22 @@ class Welcome extends CI_Controller {
 	
 public function email(){
 
-     $config = Array(
-              'protocol' => 'smtp',
-              'smtp_host' => 'ssl://smtp.googlemail.com',
-              'smtp_port' => 465,
-              'smtp_user' => 'gzampuhd@gmail.com',
-              'smtp_pass' => 'YTh4m3unjun9'
-                );
-    $this->load->library('email',$config);
-    $this->email->set_newline("\r\n");
+    $this->load->library('email');
+    
+    $config = array();
+	$config['protocol'] = 'smtp';
+	$config['smtp_host'] = 'ssl://smtp.gmail.com';
+	$config['smtp_user'] = 'roy.parejo.921115@gmail.com';
+	$config['smtp_pass'] = 'rp921115';
+	$config['smtp_port'] = 465;
+	$this->email->initialize($config);
+	 
+	$this->email->set_newline("\r\n");
 
-    $this->email->from("gzampuhd@gmail.com");
+    $this->email->from("roy.parejo.921115@gmail.com");
     $this->email->to("freddzg@gmail.com");
-    $this->email->subject("Email with Codeigniter");
-    $this->email->message("This is email has been sent with Codeigniter");
+    $this->email->subject("Correo prueba");
+    $this->email->message("mensaje de prueba con Codeigniter");
 
     if($this->email->send())
     {
@@ -107,10 +109,10 @@ public function email(){
 	    echo $string;
 	}
 	
-	public function sunat(){
+	public function sunat($filename){
 		
 
-		$filename="20380456444-03-F001-666";//'20380456444-03-F002-00000026';// 
+		//="20380456444-03-F001-666";//'20380456444-03-F002-00000026';// 
 		$folder='xml_firmado/';
 		$pathXmlfile=$folder.$filename.'.xml';
 		$pathZipfile=$folder.$filename.'.zip';
@@ -123,7 +125,6 @@ public function email(){
 
 		//Username>20380456444MODDATOS
 		//Password>moddatos
-		$wsdlURL = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
 
 		$XMLString = '<?xml version="1.0" encoding="UTF-8"?>
 		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://service.sunat.gob.pe" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
@@ -144,11 +145,12 @@ public function email(){
 		</soapenv:Envelope>';
 		//echo base64_encode(file_get_contents($pathZipfile));
 
-		$this->load->library('Feedsoap');
-		$feedsoap = new Feedsoap();
-		$feedsoap->SoapClientCall($XMLString); 
-		$feedsoap->__call("sendBill", array(), array());
-		$result = $feedsoap->__getLastResponse();
+		$params=array('url'=>'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl');
+        $this->load->library('Feedsoap',$params);
+		
+		$this->feedsoap->SoapClientCall($XMLString); 
+		$this->feedsoap->__call("sendBill", array(), array());
+		$result = $this->feedsoap->__getLastResponse();
 		//Descargamos el Archivo Response
 		$archivo = fopen($folder.'C'.$filename.'.xml','w+');
 		fputs($archivo,$result);		
