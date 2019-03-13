@@ -7,11 +7,11 @@
   </ext:UBLExtensions>
   <cbc:UBLVersionID>2.0</cbc:UBLVersionID>
   <cbc:CustomizationID>1.0</cbc:CustomizationID>
-  <cbc:ID>RA-20190209-00001</cbc:ID>
-  <cbc:ReferenceDate>2019-02-08</cbc:ReferenceDate>
-  <cbc:IssueDate>2019-02-09</cbc:IssueDate>
+  <cbc:ID>RA-20190343-8244629</cbc:ID>
+  <cbc:ReferenceDate>2019-03-06</cbc:ReferenceDate>
+  <cbc:IssueDate>2019-03-06</cbc:IssueDate>
   <cac:Signature>
-    <cbc:ID>RA-20190209-00001</cbc:ID>
+    <cbc:ID>RA-20190343-8244629</cbc:ID>
     <cac:SignatoryParty>
       <cac:PartyIdentification>
         <cbc:ID>20566229774</cbc:ID>
@@ -22,7 +22,7 @@
     </cac:SignatoryParty>
     <cac:DigitalSignatureAttachment>
       <cac:ExternalReference>
-        <cbc:URI>20566229774-RA-20190209-00001</cbc:URI>
+        <cbc:URI>20566229774-RA-20190343-8244629</cbc:URI>
       </cac:ExternalReference>
     </cac:DigitalSignatureAttachment>
   </cac:Signature>
@@ -39,14 +39,7 @@
     <cbc:LineID>1</cbc:LineID>
     <cbc:DocumentTypeCode>01</cbc:DocumentTypeCode>
     <sac:DocumentSerialID>F001</sac:DocumentSerialID>
-    <sac:DocumentNumberID>0006</sac:DocumentNumberID>
-    <sac:VoidReasonDescription>CANCELACION</sac:VoidReasonDescription>
-  </sac:VoidedDocumentsLine>
-  <sac:VoidedDocumentsLine>
-    <cbc:LineID>2</cbc:LineID>
-    <cbc:DocumentTypeCode>01</cbc:DocumentTypeCode>
-    <sac:DocumentSerialID>F001</sac:DocumentSerialID>
-    <sac:DocumentNumberID>0007</sac:DocumentNumberID>
+    <sac:DocumentNumberID>00000011</sac:DocumentNumberID>
     <sac:VoidReasonDescription>CANCELACION</sac:VoidReasonDescription>
   </sac:VoidedDocumentsLine>
 </VoidedDocuments>

@@ -23,7 +23,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost/webservice/';
+//$config['base_url'] = 'http://localhost/dubau/api_sunat/';
+$config['base_url'] = 'http://52.15.64.90/api_sunat/';
 
 /*
 |--------------------------------------------------------------------------

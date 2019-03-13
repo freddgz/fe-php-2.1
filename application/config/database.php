@@ -75,10 +75,13 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
+	'hostname' => "aa14mpwf7wtr4vk.cdbi3f0nlw3h.us-east-2.rds.amazonaws.com",
+	'username' => 'odlir',
+	'password' => 'odlir112358',
+	/*'hostname' => 'localhost',
 	'username' => 'root',
-	'password' => '',
-	'database' => 'webservice',
+	'password' => '',*/
+	'database' => 'dubau',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

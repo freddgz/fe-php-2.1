@@ -13,8 +13,10 @@ class Factura extends CI_Controller {
 public function __construct()
     {
         parent::__construct();
-        $this->url_production=base_url().'wsdl/SunatProd.wsdl';
-        $this->url_factura=$this->url_production;
+        $this->url_production = base_url().'wsdl/SunatProd.wsdl';
+        //$this->url_factura = $this->url_beta;
+	    $this->url_factura = $this->url_production;
+	    $this->load->model('usuario');
     }
 
 public function index(){
@@ -641,6 +643,14 @@ public function anular(){
     }
 }
 
+public function sunat2(){
+    var_dump(json_decode(file_get_contents('php://input'), true));
+	/*$cab = json_decode(file_get_contents('php://input'), true);
+	foreach ($cab['detalle'] as $item) {
+		var_dump($item);
+	}*/
+}
+
 public function sunat(){
 	   $method = $_SERVER['REQUEST_METHOD'];
 
@@ -650,7 +660,7 @@ public function sunat(){
 		else
 		{
             $cab = json_decode(file_get_contents('php://input'), true);
-
+			$comprobante = $cab['codigo'];
             $emp_tipo_documento = $cab['emp_tipo_documento'];
             $emp_ruc = $cab['emp_ruc'];
             $emp_razonsocial = $cab['emp_razonsocial'];
@@ -1249,14 +1259,16 @@ public function sunat(){
 		if ($res === TRUE) {
 		$zip->extractTo($folder);
 		$zip->close();
-			//echo 'ok';
 
 			$r_doc = new DOMDocument();
 			$r_doc->load($folder.'R-'.$filename.'.xml');
 			$respuesta = $r_doc->getElementsByTagName('ResponseCode')->item(0)->nodeValue.'|'.$r_doc->getElementsByTagName('Description')->item(0)->nodeValue;
 
+			$this->usuario->insert_hash($comprobante, $Hash);
 
 			$arr=array(
+				'result'=>'ok',
+				'codigo'=> $comprobante,
 				'hash'=>$Hash,
 				'respuesta'=>$respuesta,
 				'zip-xml'=>base64_encode(file_get_contents($pathZipfile)),

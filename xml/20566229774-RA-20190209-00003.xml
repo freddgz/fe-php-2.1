@@ -8,8 +8,8 @@
   <cbc:UBLVersionID>2.0</cbc:UBLVersionID>
   <cbc:CustomizationID>1.0</cbc:CustomizationID>
   <cbc:ID>RA-20190209-00003</cbc:ID>
-  <cbc:ReferenceDate>2019-02-01</cbc:ReferenceDate>
-  <cbc:IssueDate>2019-02-09</cbc:IssueDate>
+  <cbc:ReferenceDate>2019-03-06</cbc:ReferenceDate>
+  <cbc:IssueDate>2019-03-05</cbc:IssueDate>
   <cac:Signature>
     <cbc:ID>RA-20190209-00003</cbc:ID>
     <cac:SignatoryParty>
@@ -39,7 +39,7 @@
     <cbc:LineID>1</cbc:LineID>
     <cbc:DocumentTypeCode>01</cbc:DocumentTypeCode>
     <sac:DocumentSerialID>F001</sac:DocumentSerialID>
-    <sac:DocumentNumberID>0007</sac:DocumentNumberID>
+    <sac:DocumentNumberID>00000011</sac:DocumentNumberID>
     <sac:VoidReasonDescription>CANCELACION</sac:VoidReasonDescription>
   </sac:VoidedDocumentsLine>
 </VoidedDocuments>
