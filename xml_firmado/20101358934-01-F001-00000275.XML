@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="ISO-8859-1"?><Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2" xmlns:sac="urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1" xmlns:schemaLocation="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2 ..\xsd\maindoc\UBLPE-Invoice-1.0.xsd" xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2">
+<ext:UBLExtensions>
+  <ext:UBLExtension>
+    <ext:ExtensionContent>
+      <sac:AdditionalInformation>
+        <sac:AdditionalMonetaryTotal>
+          <cbc:ID>2005</cbc:ID>
+          <cbc:PayableAmount currencyID="PEN">724.92</cbc:PayableAmount>
+        </sac:AdditionalMonetaryTotal>
+        <sac:AdditionalMonetaryTotal>  
+          <cbc:ID>1001</cbc:ID>
+          <cbc:PayableAmount currencyID="PEN">2899.68</cbc:PayableAmount>
+        </sac:AdditionalMonetaryTotal>  
+        <sac:AdditionalMonetaryTotal>  
+          <cbc:ID>1002</cbc:ID>
+          <cbc:PayableAmount currencyID="PEN">0.00</cbc:PayableAmount>
+        </sac:AdditionalMonetaryTotal>  
+        <sac:AdditionalMonetaryTotal>
+          <cbc:ID>1003</cbc:ID>
+          <cbc:PayableAmount currencyID="PEN">0.00</cbc:PayableAmount>
+        </sac:AdditionalMonetaryTotal>
+        <sac:AdditionalProperty>  
+          <cbc:ID>1000</cbc:ID>
+          <cbc:Value>TRES MIL CUATROCIENTOS VEINTIUNO Y 62/100 SOLES</cbc:Value>
+        </sac:AdditionalProperty>    
+        <sac:SUNATTransaction>
+          <cbc:ID>01</cbc:ID> 
+        </sac:SUNATTransaction>
+        </sac:AdditionalInformation>
+    </ext:ExtensionContent>
+  </ext:UBLExtension>
+
+		<ext:UBLExtension>
+			<ext:ExtensionContent><ds:Signature Id="SignSUNAT"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/><ds:Reference URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>i3C0Enciwyhas22hOFnfvaseb0A=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>Ua5ioWQ/xk7fvL2mvlckUyWKgc3kcGKygbV0pRzFn9hBw1K0lYqBlxDwwR+WMyxU547HtfmEf1Z1/fCcfp1i7wxG3MBQ8q9CLX8b6cSImWLzwoczMEYinm5dPf+QRv0OfaxSU81IZC1WfdW14yzezYElSxjN1i5OBr00BTf4+zwkANHyNrb3N/kiAnbYCw44lOxtaX4Kp+083U3/pWKW9JUkkzO3jiU79KyEGERQoFVZP9aUE+P6w1rIq2kTD28yPPxRAB5okE2JPovWvLogrqW4biYqrz71RekjV+kK3gMvGulw2LJfuTpPt1rqurM4i467Y+e77sr1LEMfZ/iMxw==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>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</ds:X509Certificate></ds:X509Data></ds:KeyInfo></ds:Signature></ext:ExtensionContent>
+		</ext:UBLExtension>
+	</ext:UBLExtensions> 
+<cbc:UBLVersionID>2.0</cbc:UBLVersionID>
+<cbc:CustomizationID>1.0</cbc:CustomizationID>
+<cbc:ID>F001-00000275</cbc:ID>
+<cbc:IssueDate>2018-04-11</cbc:IssueDate>
+<cbc:InvoiceTypeCode>01</cbc:InvoiceTypeCode>
+<cbc:DocumentCurrencyCode>PEN</cbc:DocumentCurrencyCode>
+<cac:Signature>
+  <cbc:ID>20101358934</cbc:ID>
+  <cbc:Note>Elaborado por Sistema de Emision Electronica Facturador SUNAT (SEE-SFS) 1.0.5</cbc:Note>
+  <cbc:ValidatorID>951487</cbc:ValidatorID>
+  <cac:SignatoryParty>
+      <cac:PartyIdentification>
+        <cbc:ID>20101358934</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>GAMEDA</cbc:Name>
+      </cac:PartyName>
+      <cac:AgentParty>
+        <cac:PartyIdentification>
+          <cbc:ID>20101358934</cbc:ID>
+        </cac:PartyIdentification>
+        <cac:PartyName>
+          <cbc:Name>INDUSTRIAL GAMEDA SAC</cbc:Name>
+        </cac:PartyName>
+        <cac:PartyLegalEntity>
+          <cbc:RegistrationName>INDUSTRIAL GAMEDA SAC</cbc:RegistrationName>
+        </cac:PartyLegalEntity>
+      </cac:AgentParty>
+    </cac:SignatoryParty>
+    <cac:DigitalSignatureAttachment>
+      <cac:ExternalReference>
+        <cbc:URI>SIGN</cbc:URI>
+      </cac:ExternalReference>
+    </cac:DigitalSignatureAttachment>
+</cac:Signature>
+<cac:AccountingSupplierParty>
+  <cbc:CustomerAssignedAccountID>20101358934</cbc:CustomerAssignedAccountID>
+  <cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>
+  <cac:Party>
+    <cac:PartyName>
+      <cbc:Name>GAMEDA</cbc:Name>
+    </cac:PartyName>
+    <cac:PostalAddress>
+      <cbc:ID>150108</cbc:ID>
+      <cbc:StreetName>AV. LOS GORRIONES NRO. 490 URB. LA CAMPI?A LIMA - LIMA - CHORRILLOS</cbc:StreetName>
+      <cac:Country>
+        <cbc:IdentificationCode>PER</cbc:IdentificationCode>
+      </cac:Country>
+    </cac:PostalAddress>
+    <cac:PartyLegalEntity>
+      <cbc:RegistrationName>INDUSTRIAL GAMEDA SAC</cbc:RegistrationName>
+    </cac:PartyLegalEntity>
+  </cac:Party>
+</cac:AccountingSupplierParty>
+<cac:AccountingCustomerParty>
+  <cbc:CustomerAssignedAccountID>10457684245</cbc:CustomerAssignedAccountID>
+  <cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>
+  <cac:Party>
+    <cac:PartyLegalEntity>
+      <cbc:RegistrationName>PAREJO MATAQQUE EUDES</cbc:RegistrationName>
+    </cac:PartyLegalEntity>
+  </cac:Party>
+</cac:AccountingCustomerParty>
+<cac:SellerSupplierParty>
+  <cac:Party>
+    <cac:PostalAddress>
+      <cbc:AddressTypeCode>0</cbc:AddressTypeCode>
+    </cac:PostalAddress>
+  </cac:Party>
+</cac:SellerSupplierParty>
+<cac:TaxTotal>
+  <cbc:TaxAmount currencyID="PEN">521.94</cbc:TaxAmount>
+  <cac:TaxSubtotal>
+    <cbc:TaxAmount currencyID="PEN">521.94</cbc:TaxAmount>
+    <cac:TaxCategory>
+      <cac:TaxScheme>
+        <cbc:ID>1000</cbc:ID>
+        <cbc:Name>IGV</cbc:Name>
+        <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+      </cac:TaxScheme>
+    </cac:TaxCategory>  
+  </cac:TaxSubtotal>
+</cac:TaxTotal>
+<cac:LegalMonetaryTotal>
+  <cbc:AllowanceTotalAmount currencyID="PEN">0.00</cbc:AllowanceTotalAmount>
+  <cbc:ChargeTotalAmount currencyID="PEN">0.00</cbc:ChargeTotalAmount>
+  <cbc:PayableAmount currencyID="PEN">3421.62</cbc:PayableAmount>
+</cac:LegalMonetaryTotal>
+<cac:InvoiceLine>
+<cbc:ID>1</cbc:ID>
+<cbc:InvoicedQuantity unitCode="MIL">40.00</cbc:InvoicedQuantity>
+<cbc:LineExtensionAmount currencyID="PEN">984.78</cbc:LineExtensionAmount>
+<cac:PricingReference>
+  <cac:AlternativeConditionPrice>
+    <cbc:PriceAmount currencyID="PEN">834.56</cbc:PriceAmount>
+    <cbc:PriceTypeCode>01</cbc:PriceTypeCode>
+  </cac:AlternativeConditionPrice>
+</cac:PricingReference>  
+<cac:AllowanceCharge>
+  <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+  <cbc:Amount currencyID="PEN">208.64</cbc:Amount>
+</cac:AllowanceCharge>
+<cac:TaxTotal>
+  <cbc:TaxAmount currencyID="PEN">150.22</cbc:TaxAmount>
+  <cac:TaxSubtotal>
+    <cbc:TaxableAmount currencyID="PEN">150.22</cbc:TaxableAmount>
+    <cbc:TaxAmount currencyID="PEN">150.22</cbc:TaxAmount>
+    <cac:TaxCategory>
+      <cbc:TaxExemptionReasonCode>10</cbc:TaxExemptionReasonCode>
+      <cac:TaxScheme>
+        <cbc:ID>1000</cbc:ID>
+        <cbc:Name>IGV</cbc:Name>
+        <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+      </cac:TaxScheme>  
+    </cac:TaxCategory>
+  </cac:TaxSubtotal>
+</cac:TaxTotal>
+<cac:Item>
+  <cbc:Description>CASQUILLO 24 HE ZB  GAMEDA</cbc:Description>
+  <cac:SellersItemIdentification>
+      <cbc:ID>975</cbc:ID>
+  </cac:SellersItemIdentification>
+  <cac:AdditionalItemIdentification>
+      <cbc:ID> </cbc:ID>
+  </cac:AdditionalItemIdentification>
+</cac:Item>
+<cac:Price>
+  <cbc:PriceAmount currencyID="PEN">26.080</cbc:PriceAmount>
+</cac:Price>
+</cac:InvoiceLine>
+<cac:InvoiceLine>
+<cbc:ID>2</cbc:ID>
+<cbc:InvoicedQuantity unitCode="MIL">30.00</cbc:InvoicedQuantity>
+<cbc:LineExtensionAmount currencyID="PEN">928.33</cbc:LineExtensionAmount>
+<cac:PricingReference>
+  <cac:AlternativeConditionPrice>
+    <cbc:PriceAmount currencyID="PEN">786.72</cbc:PriceAmount>
+    <cbc:PriceTypeCode>01</cbc:PriceTypeCode>
+  </cac:AlternativeConditionPrice>
+</cac:PricingReference>  
+<cac:AllowanceCharge>
+  <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+  <cbc:Amount currencyID="PEN">196.68</cbc:Amount>
+</cac:AllowanceCharge>
+<cac:TaxTotal>
+  <cbc:TaxAmount currencyID="PEN">141.61</cbc:TaxAmount>
+  <cac:TaxSubtotal>
+    <cbc:TaxableAmount currencyID="PEN">141.61</cbc:TaxableAmount>
+    <cbc:TaxAmount currencyID="PEN">141.61</cbc:TaxAmount>
+    <cac:TaxCategory>
+      <cbc:TaxExemptionReasonCode>10</cbc:TaxExemptionReasonCode>
+      <cac:TaxScheme>
+        <cbc:ID>1000</cbc:ID>
+        <cbc:Name>IGV</cbc:Name>
+        <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+      </cac:TaxScheme>  
+    </cac:TaxCategory>
+  </cac:TaxSubtotal>
+</cac:TaxTotal>
+<cac:Item>
+  <cbc:Description>CASQUILLO 30 HE ZB  GAMEDA</cbc:Description>
+  <cac:SellersItemIdentification>
+      <cbc:ID>976</cbc:ID>
+  </cac:SellersItemIdentification>
+  <cac:AdditionalItemIdentification>
+      <cbc:ID> </cbc:ID>
+  </cac:AdditionalItemIdentification>
+</cac:Item>
+<cac:Price>
+  <cbc:PriceAmount currencyID="PEN">32.780</cbc:PriceAmount>
+</cac:Price>
+</cac:InvoiceLine>
+<cac:InvoiceLine>
+<cbc:ID>3</cbc:ID>
+<cbc:InvoicedQuantity unitCode="MIL">40.00</cbc:InvoicedQuantity>
+<cbc:LineExtensionAmount currencyID="PEN">1508.51</cbc:LineExtensionAmount>
+<cac:PricingReference>
+  <cac:AlternativeConditionPrice>
+    <cbc:PriceAmount currencyID="PEN">1278.40</cbc:PriceAmount>
+    <cbc:PriceTypeCode>01</cbc:PriceTypeCode>
+  </cac:AlternativeConditionPrice>
+</cac:PricingReference>  
+<cac:AllowanceCharge>
+  <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+  <cbc:Amount currencyID="PEN">319.60</cbc:Amount>
+</cac:AllowanceCharge>
+<cac:TaxTotal>
+  <cbc:TaxAmount currencyID="PEN">230.11</cbc:TaxAmount>
+  <cac:TaxSubtotal>
+    <cbc:TaxableAmount currencyID="PEN">230.11</cbc:TaxableAmount>
+    <cbc:TaxAmount currencyID="PEN">230.11</cbc:TaxAmount>
+    <cac:TaxCategory>
+      <cbc:TaxExemptionReasonCode>10</cbc:TaxExemptionReasonCode>
+      <cac:TaxScheme>
+        <cbc:ID>1000</cbc:ID>
+        <cbc:Name>IGV</cbc:Name>
+        <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+      </cac:TaxScheme>  
+    </cac:TaxCategory>
+  </cac:TaxSubtotal>
+</cac:TaxTotal>
+<cac:Item>
+  <cbc:Description>CASQUILLO 36 HE ZB  GAMEDA</cbc:Description>
+  <cac:SellersItemIdentification>
+      <cbc:ID>977</cbc:ID>
+  </cac:SellersItemIdentification>
+  <cac:AdditionalItemIdentification>
+      <cbc:ID> </cbc:ID>
+  </cac:AdditionalItemIdentification>
+</cac:Item>
+<cac:Price>
+  <cbc:PriceAmount currencyID="PEN">39.950</cbc:PriceAmount>
+</cac:Price>
+</cac:InvoiceLine>
+</Invoice>

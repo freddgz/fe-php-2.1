@@ -18,7 +18,7 @@ public function __construct()
         parent::__construct();
         $this->url_production=base_url().'wsdl/billService.wsdl';
 
-        $this->url_factura=$this->url_production;
+        $this->url_factura=$this->url_beta;
         $this->url_guia=$this->url_guia_beta;
     }
 
@@ -119,33 +119,38 @@ public function estadocdr($ruc, $tipodoc, $serie, $numero){
 
         $folder='xml_firmado/';
         $filename = $ruc.'-'.$tipodoc.'-'.$serie.'-'.$numero;
-        $cdr=base64_decode($content);
-        $archivo = fopen($folder.'R-'.$filename.'.zip','w+');
-        fputs($archivo,$cdr);
-        fclose($archivo);
+        if(!empty($content)){
+            $cdr=base64_decode($content);
+            $archivo = fopen($folder.'R-'.$filename.'.zip','w+');
+            fputs($archivo,$cdr);
+            fclose($archivo);
 
-        //DESCOMPRIMIR ARCHIVO
-        /*
-        $zip = new ZipArchive;
-        $res = $zip->open($folder.'R-'.$filename.'.zip');
+            //DESCOMPRIMIR ARCHIVO            
+            $zip = new ZipArchive;
+            $res = $zip->open($folder.'R-'.$filename.'.zip');
 
-        if ($res === TRUE) {
-            $zip->extractTo($folder);
-            $zip->close();            
-        }*/
+            if ($res !== TRUE) {
+                json_output(500,array('status'=>500, 'mensaje'=>'No se puedo abrir el archivo '.'R-'.$filename.'.zip'));
+            } else {
+                $zip->extractTo($folder);
+                $zip->close(); 
 
-        /*
-        $xpath = new DomXpath($xml);
-        foreach ($xpath->query('//statusMessage') as $message){ }
-        foreach ($xpath->query('//statusCode') as $code){ }*/
-        json_output(200,array(
-            'status'=>'200', 
-            'code'=>$code, 
-            'message'=>$message,
-            'content'=>$content
-            ));
+                $r_doc = new DOMDocument();
+                $r_doc->load($folder.'R-'.$filename.'.xml');
+                $hash = $r_doc->getElementsByTagName('DigestValue')->item(0)->nodeValue;
+
+                json_output(200,array(
+                    'status'=>'200', 
+                    'code'=>$code, 
+                    'message'=>$message,
+                    'hash'=>$hash,
+                    'content'=>$content
+                ));
+            }
+
+            
+        }
     }
-
     } catch (Exception $e) {
         json_output(500,array('status'=>500, 'mensaje'=>$e->getMessage(), 'mensaje-detalle'=>$e->getTraceAsString()));
     }
@@ -1281,7 +1286,6 @@ public function sunat(){
     } catch (Exception $e) {
         json_output(500,array('status'=>500, 'mensaje'=>$e->getMessage(), 'mensaje-detalle'=>$e->getTraceAsString()));
     }
-    
 }
 
 public function boleta(){
